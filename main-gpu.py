@@ -25,7 +25,8 @@ model = model.to(device)
 @app.post("/embedding")
 async def embedding(text: str = Form(...)):
     print(text)
-    input = tokenizer(text, truncation=True, max_length=512)['input_ids']
+    input = tokenizer(text, truncation=True,
+                      padding="max_length", max_length=512)['input_ids']
     print(input)
     embeddings = model(torch.tensor(input)[None, :])[0]
     output = embeddings.detach().numpy().tolist()
@@ -37,8 +38,8 @@ async def embeddingMax(text: str = Form(...)):
     print(text)
     input = tokenizer(text, truncation=True, max_length=512)['input_ids']
     print(input)
-    embeddings = model(torch.tensor(input)[None, :])[1]
-    output = embeddings.detach().numpy().tolist()
+    embeddings = model(torch.tensor(input)[None, :])[0]
+    output = embeddings.max(1)[0].detach().numpy().tolist()
     return {"embedding": output[0]}
 
 
