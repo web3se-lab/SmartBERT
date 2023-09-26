@@ -128,5 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 model/*
+model-backup
 new_model/*
 !model/.gitkeep
+
+.vscode

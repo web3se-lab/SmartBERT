@@ -1,14 +1,11 @@
 import requests
-import torch
 from transformers import RobertaTokenizer, RobertaForMaskedLM, DataCollatorForLanguageModeling, Trainer, TrainingArguments
 from torch.utils.data import Dataset
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
-URL = "http://192.168.41.46:8081"
+
+API_URL = "http://192.168.41.46:8081"
 OLD_MODEL = "./model"
 NEW_MODEL = "./new_model"
-GPU = "cuda:2"
 
 
 class TrainDataset(Dataset):
@@ -16,7 +13,7 @@ class TrainDataset(Dataset):
         self.inputs = inputs
 
     def __len__(self):
-        return len(self.inputs)
+        return len(self.inputs["input_ids"])
 
     def __getitem__(self, idx):
         return {"input_ids": self.inputs["input_ids"][idx], "attention_mask": self.inputs["attention_mask"][idx]}
@@ -24,16 +21,13 @@ class TrainDataset(Dataset):
 
 def get_train_data(id: int) -> str:
     try:
-        # 构建请求URL，增加key参数
-        url = f"{URL}/data/vulnerability?key={id}"
+        url = f"{API_URL}/data/vulnerability?key={id}"
         print(f"Request: {url}")
 
-        # 发起GET请求
+        # get dataset from API
         res = requests.get(url)
 
-        # 检查响应状态码
         if res.status_code == 200:
-            # 解析JSON响应并返回
             data = res.json()
             if data:
                 return data['tree']
@@ -43,7 +37,6 @@ def get_train_data(id: int) -> str:
             return None
 
     except Exception as e:
-        # 处理请求错误，例如连接错误等
         print(f"Error: {e}")
         return None
 
@@ -52,13 +45,11 @@ def train():
     # define model and tokenizer
     model = RobertaForMaskedLM.from_pretrained(OLD_MODEL)
     tokenizer = RobertaTokenizer.from_pretrained(OLD_MODEL)
-    device = torch.device(GPU if torch.cuda.is_available() else "cpu")
-
-    model.to(device)
 
     data = []
     # iterate dataset
-    for id in range(1, 2):
+    print(f"Train: 1-2000")
+    for id in range(1, 2001):
         code = get_train_data(id)
         print(f"ID: {id}")
         if code is None:
@@ -68,9 +59,44 @@ def train():
             for j in code[i]:
                 data.append(code[i][j])
 
+    print(f"Train data count: {len(data)}")
     inputs = tokenizer(data, return_tensors="pt",
                        padding="max_length", truncation=True, max_length=512)
-    dataset = TrainDataset(inputs)
+    train_dataset = TrainDataset(inputs)
+
+    # # 创建数据加载器
+    # batch_size = 1  # 指定批处理大小
+    # train_loader = DataLoader(
+    #     train_dataset, batch_size=batch_size, shuffle=True)
+
+    # # 遍历和打印每一行数据集
+    # for batch in train_loader:
+    #     # batch是一个包含多个样本的字典，包含了"input_ids"和"attention_mask"字段
+    #     input_ids = batch["input_ids"]
+    #     attention_mask = batch["attention_mask"]
+    #     # 打印当前批次的数据
+    #     for i in range(len(input_ids)):
+    #         print(f"Sample {i+1}:")
+    #         print("input_ids:", input_ids[i])
+    #         print("attention_mask:", attention_mask[i])
+
+    data = []
+    # iterate dataset
+    print(f"Evaluate: 2001-2503")
+    for id in range(2001, 2504):
+        code = get_train_data(id)
+        print(f"ID: {id}")
+        if code is None:
+            continue
+
+        for i in code:
+            for j in code[i]:
+                data.append(code[i][j])
+
+    print(f"Eval data count: {len(data)}")
+    inputs = tokenizer(data, return_tensors="pt",
+                       padding="max_length", truncation=True, max_length=512)
+    eval_dataset = TrainDataset(inputs)
 
     data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer, mlm=True, mlm_probability=0.15)
@@ -92,7 +118,8 @@ def train():
         model=model,
         args=training_args,
         data_collator=data_collator,
-        train_dataset=dataset,
+        train_dataset=train_dataset,
+        eval_dataset=eval_dataset
     )
 
     trainer.train()
