@@ -1,12 +1,8 @@
-import sys
 import torch
 import uvicorn
 from transformers import AutoTokenizer, AutoModel
 from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
-
-device = f"cuda:{sys.argv[1]}" if torch.cuda.is_available() and len(
-    sys.argv) >= 2 else "cpu"
 
 app = FastAPI()
 app.add_middleware(
@@ -20,36 +16,36 @@ app.add_middleware(
 
 @app.post("/embedding")
 async def embedding(text: str = Form(...)):
-    global model, tokenizer, device
+    global model, tokenizer
     print(text)
     input = tokenizer(text, truncation=True,
                       padding="max_length", max_length=512)['input_ids']
     print(input)
-    embeddings = model(torch.tensor(input).to(device)[None, :])[0]
+    embeddings = model(torch.tensor(input)[None, :])[0]
     output = embeddings.cpu().detach().numpy().tolist()
-    return {"embedding": output[0]}
+    return {"embedding": output[0], "object": "embedding"}
 
 
-@app.post("/embeddingMax")
+@app.post("/embedding-max")
 async def embeddingMax(text: str = Form(...)):
-    global model, tokenizer, device
+    global model, tokenizer
     print(text)
     input = tokenizer(text, truncation=True, max_length=512)['input_ids']
     print(input)
-    embeddings = model(torch.tensor(input).to(device)[None, :])[0]
+    embeddings = model(torch.tensor(input)[None, :])[0]
     output = embeddings.max(1)[0].cpu().detach().numpy().tolist()
-    return {"embedding": output[0]}
+    return {"embedding": output[0], "object": "embedding.max"}
 
 
-@app.post("/embeddingAvg")
+@app.post("/embedding-avg")
 async def embeddingAvg(text: str = Form(...)):
-    global model, tokenizer, device
+    global model, tokenizer
     print(text)
     input = tokenizer(text, truncation=True, max_length=512)['input_ids']
     print(input)
-    embeddings = model(torch.tensor(input).to(device)[None, :])[0]
+    embeddings = model(torch.tensor(input)[None, :])[0]
     output = embeddings.mean(1).cpu().detach().numpy().tolist()
-    return {"embedding": output[0]}
+    return {"embedding": output[0], "object": "embedding.avg"}
 
 
 @app.post("/tokenize")
@@ -71,7 +67,4 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained("./model")
     model = AutoModel.from_pretrained("./model")
 
-    print('device', device)
-    model = model.to(device)
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8100)

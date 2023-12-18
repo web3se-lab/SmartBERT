@@ -1,0 +1,7 @@
+version: "3"
+services:
+  glm-api:
+    image: devilyouwei/smartbert:latest
+    container_name: smartbert
+    ports:
+      - 8100:8100
