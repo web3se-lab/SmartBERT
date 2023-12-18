@@ -11,7 +11,7 @@ pip install -r requirements.txt
 ## Run API
 
 ```bash
-python3 ./main.py
+python ./api.py
 ```
 
 ## Run Docker
@@ -19,13 +19,13 @@ python3 ./main.py
 **docker-compose.yml**
 
 ```yml
-version: "3"
+version: '3'
 services:
-  glm-api:
-    image: devilyouwei/smartbert:latest
-    container_name: smartbert
-    ports:
-      - 8100:8100
+    smartbert:
+        image: devilyouwei/smartbert:latest
+        container_name: smartbert
+        ports:
+            - 8100:8100
 ```
 
 ## API
@@ -36,7 +36,7 @@ services:
 
 ```json
 {
-  "text": "//SPDX-License-Identifier: MIT ..."
+    "text": "//SPDX-License-Identifier: MIT ..."
 }
 ```
 
@@ -55,7 +55,7 @@ services:
 
 ```json
 {
-  "text": "//SPDX-License-Identifier: MIT ..."
+    "text": "//SPDX-License-Identifier: MIT ..."
 }
 ```
 
@@ -77,7 +77,7 @@ services:
 
 ```json
 {
-  "text": "//SPDX-License-Identifier: MIT ..."
+    "text": "//SPDX-License-Identifier: MIT ..."
 }
 ```
 
@@ -101,7 +101,7 @@ services:
 
 ```json
 {
-  "text": "//SPDX-License-Identifier: MIT ..."
+    "text": "//SPDX-License-Identifier: MIT ..."
 }
 ```
 
