@@ -1,6 +1,6 @@
 # SmartBERT
 
-Represent your smart contracts to embeddings!
+Learning representations from **smart contracts**!
 
 ## Install
 
@@ -8,13 +8,23 @@ Represent your smart contracts to embeddings!
 pip install -r requirements.txt
 ```
 
+## Model
+
+```bash
+wget https://github.com/web3se-lab/SmartBERT/releases/download/v1.0.0/SmartBERT_model_v1.zip
+```
+
+Then extract all the files to the dir `model`
+
 ## Run API
 
 ```bash
 python ./api.py
 ```
 
-## Run Docker
+## For Docker
+
+You can also start SmartBERT API with docker and docker-compose
 
 **docker-compose.yml**
 
@@ -28,7 +38,7 @@ services:
             - 8100:8100
 ```
 
-## API
+## API Documentation
 
 ### POST: [http://localhost:8100/tokenize](http://localhost:8100/tokenize)
 
