@@ -1,18 +1,22 @@
 # SmartBERT V2
 
-Learning representations from **smart contracts**!
+🧐 Learning representations from **smart contracts**!
 
 ## Introduction
 
-**SmartBERT** is a pre-trained programming language model based on [microsoft/codebert-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm), which itself is built on the [RoBERTa](https://huggingface.co/facebook/roberta-base) architecture using a simple **Masked Language Model (MLM)** objective. **SmartBERT** is specifically fine-tuned for smart contracts, converting contract code into embeddings suitable for various downstream tasks in smart contract analysis.
+**SmartBERT** is a pre-trained programming language model based on [microsoft/codebert-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm), which itself is built on the [RoBERTa](https://huggingface.co/facebook/roberta-base) architecture using a simple **Masked Language Model (MLM)** objective. **SmartBERT** is specifically fine-tuned for **smart contracts**, converting contract code into embeddings suitable for various downstream tasks in smart contract analysis.
 
 ## Installation
 
-We recommend creating a virtual environment before installing the necessary packages, such as with [Anaconda](https://www.anaconda.com/).
+We recommend creating a virtual environment before installing the pip packages, such as with [Anaconda](https://www.anaconda.com/).
+
+Then, install the requirements:
 
 ```bash
 pip install -r requirements.txt
 ```
+
+Download **SmartBERT** model from <https://github.com/web3se-lab/SmartBERT/releases> and unzip all the files to `/model`
 
 ## Usage
 
@@ -21,7 +25,7 @@ pip install -r requirements.txt
 Start the API server with the following command:
 
 ```bash
-python3 ./api.py
+./api.sh
 ```
 
 ### Running with Docker
@@ -38,9 +42,10 @@ services:
       - 8100:8100
 ```
 
-## API Endpoints
+## API
 
-The following endpoints are available. Please use the POST method with FormData to request APIs.
+The following APIs are available.
+Please use the POST method with JSON to request APIs.
 
 ### Tokenize
 
@@ -50,20 +55,25 @@ The following endpoints are available. Please use the POST method with FormData 
 
 ```json
 {
-  "text": "//SPDX-License-Identifier: MIT ..."
+  "text": "Smart Contract function-level code here..."
 }
 ```
 
 **Response:**
 
 ```json
-{
-    "token": [ "<s>", "//", "SP", "DX", "-", "License", ...  ],
-    "ids": [ 0, 42326, 4186, 40190, 12, ...  ]
-}
+[
+  {
+    "token": ["<s>", "//", "SP", "DX", "-", "License"], //...
+    "ids": [0, 42326, 4186, 40190, 12] // ...
+  }
+  //...
+]
 ```
 
 ### Embedding
+
+Available poolings: average pooling, max pooling, CLS token pooling, and `pooler_output`
 
 **Endpoint:** `http://localhost:8100/embedding`
 
@@ -71,70 +81,22 @@ The following endpoints are available. Please use the POST method with FormData 
 
 ```json
 {
-  "text": "//SPDX-License-Identifier: MIT ..."
+  "text": "Smart Contract function-level code here...",
+  "pool": "avg"
 }
 ```
+
+- Param `text` can be string or string array of smart contract function code snippets
+- Param `pool` can be `avg`, `max`, `cls`, `out`
 
 **Response:**
 
 ```json
 {
-    "embedding": [
-        [ -0.09258933365345001, ...],
-        [ ..., 0.21117761731147766 ]
-    ],
-    "object": "embedding"
-}
-```
-
-### Average Embedding
-
-**Endpoint:** `http://localhost:8100/embedding-avg`
-
-**Request:**
-
-```json
-{
-  "text": "//SPDX-License-Identifier: MIT ..."
-}
-```
-
-**Response:**
-
-```json
-{
-    "embedding": [
-        -0.006051725707948208,
-        0.10594873130321503,
-        ...
-        0.07721099257469177
-    ],
-    "object": "embedding.avg"
-}
-```
-
-### Maximum Embedding
-
-**Endpoint:** `http://localhost:8100/embedding-max`
-
-**Request:**
-
-```json
-{
-  "text": "//SPDX-License-Identifier: MIT ..."
-}
-```
-
-**Response:**
-
-```json
-{
-    "embedding": [
-        0.7459375858306885,
-        1.428691029548645,
-        ...
-    ],
-    "object": "embedding.max"
+  "embedding": [
+    [-0.006051725707948208, 0.10594873130321503, 0.07721099257469177] // ... dimension is 768
+  ],
+  "object": "embedding.avg"
 }
 ```
 
@@ -161,11 +123,12 @@ Then, run the training script:
 
 From **V2**, we change the initial model to [CodeBERT-base-MLM](https://huggingface.co/microsoft/codebert-base-mlm).
 
-**SmartBERT V2** is trained on a dataset of **12,000** smart contracts with 1,109,531 functions and evaluated on an distinct **3,000** contracts, maintaining a training-to-evaluation ratio of 4:1.
+**SmartBERT V2** is trained on a dataset of **12,000** smart contracts with 1,109,531 functions and evaluated on a distinct **3,000** contracts, maintaining a training-to-evaluation ratio of 4:1.
+The total training step is **173370**.
 
 This dataset for **V2** is specifically utilized in the **SmartIntentNN** project, which can be found at <https://github.com/web3se-lab/web3-sekit>.
 
-**V3** will be trained on our full dataset of over **45,000** smart contracts.
+**V3** will be trained on our full dataset of over **45,000** smart contracts (NOT for paper use).
 
 ## References
 

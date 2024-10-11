@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 model/*
 model-backup
-new_model/*
+checkpoint/*
 !model/.gitkeep
 
 .vscode
