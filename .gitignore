@@ -133,3 +133,7 @@ new_model/*
 !model/.gitkeep
 
 .vscode
+tmp*
+codebert-base-mlm
+CodeBERTa-small-v1
+wandb

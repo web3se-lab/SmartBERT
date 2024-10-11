@@ -1,42 +1,56 @@
-# SmartBERT
+# SmartBERT V2
 
-Represent your smart contracts to embeddings!
+Learning representations from **smart contracts**!
 
-## Install
+## Introduction
+
+**SmartBERT** is a pre-trained programming language model based on [microsoft/codebert-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm), which itself is built on the [RoBERTa](https://huggingface.co/facebook/roberta-base) architecture using a simple **Masked Language Model (MLM)** objective. **SmartBERT** is specifically fine-tuned for smart contracts, converting contract code into embeddings suitable for various downstream tasks in smart contract analysis.
+
+## Installation
+
+We recommend creating a virtual environment before installing the necessary packages, such as with [Anaconda](https://www.anaconda.com/).
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Run API
+## Usage
+
+### Running the API
+
+Start the API server with the following command:
 
 ```bash
-python ./api.py
+python3 ./api.py
 ```
 
-## Run Docker
+### Running with Docker
 
-**docker-compose.yml**
+Use the provided `docker-compose.yml` file to run SmartBERT with Docker.
 
 ```yml
-version: '3'
+version: "3"
 services:
-    smartbert:
-        image: devilyouwei/smartbert:latest
-        container_name: smartbert
-        ports:
-            - 8100:8100
+  smartbert:
+    image: devilyouwei/smartbert:latest
+    container_name: smartbert
+    ports:
+      - 8100:8100
 ```
 
-## API
+## API Endpoints
 
-### POST: [http://localhost:8100/tokenize](http://localhost:8100/tokenize)
+The following endpoints are available. Please use the POST method with FormData to request APIs.
+
+### Tokenize
+
+**Endpoint:** `http://localhost:8100/tokenize`
 
 **Request:**
 
 ```json
 {
-    "text": "//SPDX-License-Identifier: MIT ..."
+  "text": "//SPDX-License-Identifier: MIT ..."
 }
 ```
 
@@ -49,13 +63,15 @@ services:
 }
 ```
 
-### POST: [http://localhost:8100/embedding](http://localhost:8100/embedding)
+### Embedding
+
+**Endpoint:** `http://localhost:8100/embedding`
 
 **Request:**
 
 ```json
 {
-    "text": "//SPDX-License-Identifier: MIT ..."
+  "text": "//SPDX-License-Identifier: MIT ..."
 }
 ```
 
@@ -71,13 +87,15 @@ services:
 }
 ```
 
-### POST: [http://localhost:8100/embedding-avg](http://localhost:8100/embedding-avg)
+### Average Embedding
+
+**Endpoint:** `http://localhost:8100/embedding-avg`
 
 **Request:**
 
 ```json
 {
-    "text": "//SPDX-License-Identifier: MIT ..."
+  "text": "//SPDX-License-Identifier: MIT ..."
 }
 ```
 
@@ -95,13 +113,15 @@ services:
 }
 ```
 
-### POST: [http://localhost:8100/embedding-max](http://localhost:8100/embedding-max)
+### Maximum Embedding
+
+**Endpoint:** `http://localhost:8100/embedding-max`
 
 **Request:**
 
 ```json
 {
-    "text": "//SPDX-License-Identifier: MIT ..."
+  "text": "//SPDX-License-Identifier: MIT ..."
 }
 ```
 
@@ -118,10 +138,42 @@ services:
 }
 ```
 
-## Thanks
+## Retraining
 
-Trained by [Sen Fang](https://github.com/TomasAndersonFang)
+To retrain SmartBERT, first download an original RoBERTa-based model:
 
-Developed by [Youwei Huang](https://github.com/devilyouwei)
+```bash
+git lfs install
+git clone https://huggingface.co/microsoft/codebert-base-mlm
+```
 
-Powered by RoBERTa
+Modify the `OLD_MODEL` variable in `train.py` to the path of the original model.
+
+Then, run the training script:
+
+```bash
+./train.sh
+```
+
+## Setup
+
+**SmartBERT V1** is trained on a dataset of over **40,000** smart contracts by [Sen Fang](https://github.com/TomasAndersonFang), based on [RoBERTa-base](https://huggingface.co/FacebookAI/roberta-base)
+
+From **V2**, we change the initial model to [CodeBERT-base-MLM](https://huggingface.co/microsoft/codebert-base-mlm).
+
+**SmartBERT V2** is trained on a dataset of **12,000** smart contracts with 1,109,531 functions and evaluated on an distinct **3,000** contracts, maintaining a training-to-evaluation ratio of 4:1.
+
+This dataset for **V2** is specifically utilized in the **SmartIntentNN** project, which can be found at <https://github.com/web3se-lab/web3-sekit>.
+
+**V3** will be trained on our full dataset of over **45,000** smart contracts.
+
+## References
+
+- [RoBERTa](https://huggingface.co/facebook/roberta-base)
+- [CodeBERT-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm)
+
+## Contributors
+
+Developed by **[Youwei Huang](https://www.devil.ren)**
+
+Training by **[Sen Fang](https://github.com/TomasAndersonFang)** and **[Youwei Huang](https://www.devil.ren)**
