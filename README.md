@@ -1,4 +1,4 @@
-# SmartBERT V2
+# SmartBERT
 
 🧐 Learning representations from **smart contracts**!
 
@@ -105,11 +105,12 @@ Available poolings: average pooling, max pooling, CLS token pooling, and `pooler
 To retrain SmartBERT, first download an original RoBERTa-based model:
 
 ```bash
+cd base-model
 git lfs install
 git clone https://huggingface.co/microsoft/codebert-base-mlm
 ```
 
-Modify the `OLD_MODEL` variable in `train.py` to the path of the original model.
+Modify the `OLD_MODEL="./base-model/{your initial model}"` variable in `train.py` to the path of the original model.
 
 Then, run the training script:
 
@@ -119,7 +120,7 @@ Then, run the training script:
 
 ## Setup
 
-**SmartBERT V1** is trained on a dataset of over **40,000** smart contracts by [Sen Fang](https://github.com/TomasAndersonFang), based on [RoBERTa-base](https://huggingface.co/FacebookAI/roberta-base)
+**SmartBERT V1** is trained on a dataset of more than **40,000** smart contracts by [Sen Fang](https://github.com/TomasAndersonFang), based on [RoBERTa-base](https://huggingface.co/FacebookAI/roberta-base)
 
 From **V2**, we change the initial model to [CodeBERT-base-MLM](https://huggingface.co/microsoft/codebert-base-mlm).
 
@@ -128,7 +129,7 @@ The total training step is **173370**.
 
 This dataset for **V2** is specifically utilized in the **SmartIntentNN** project, which can be found at <https://github.com/web3se-lab/web3-sekit>.
 
-**V3** will be trained on our full dataset of over **45,000** smart contracts (NOT for paper use).
+**V3** will be trained on our full dataset of over **45,000** smart contracts.
 
 ## References
 
