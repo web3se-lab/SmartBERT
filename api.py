@@ -17,7 +17,9 @@ app.add_middleware(
 
 MODEL = "./model/SmartBERT-codebert-16000"
 
-# 定义请求体的数据模型
+# 检测是否存在GPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
 
 
 class TextRequest(BaseModel):
@@ -43,7 +45,7 @@ async def embedding(request: TextRequest):
         inputs = tokenizer(texts, return_tensors="pt",
                            padding="max_length", truncation=True, max_length=512)
 
-        inputs = {key: value.to("cuda") for key, value in inputs.items()}
+        inputs = {key: value.to(device) for key, value in inputs.items()}
 
         outputs = model(**inputs)
 
@@ -54,6 +56,7 @@ async def embedding(request: TextRequest):
             # Max Pooling
             embedding_result = outputs.last_hidden_state.max(1)[0]
         elif pool_method == 'avg':
+            # mean pooling
             last_hidden_states = outputs.last_hidden_state
             attention_masks = inputs['attention_mask']
             attention_masks_expanded = attention_masks.unsqueeze(
@@ -62,8 +65,6 @@ async def embedding(request: TextRequest):
                 last_hidden_states * attention_masks_expanded, 1)
             embedding_result = sum_pooled / \
                 torch.clamp(attention_masks_expanded.sum(1), min=1e-9)  # 避免除以0
-
-            # embedding_result = outputs.last_hidden_state.mean(1)
         else:
             # Use pooler_output if available
             if hasattr(outputs, 'pooler_output'):
@@ -74,7 +75,8 @@ async def embedding(request: TextRequest):
         output = embedding_result.cpu().detach().numpy().tolist()
 
     # 清理显存
-    torch.cuda.empty_cache()
+    if device == "cuda":
+        torch.cuda.empty_cache()
 
     return {"embedding": output, "object": f"embedding.{pool_method}"}
 
@@ -92,14 +94,17 @@ async def tokenize(request: TextRequest):
             tokens = tokenizer.tokenize(text)
             tokens = [tokenizer.cls_token] + tokens + [tokenizer.eos_token]
             input_ids = inputs['input_ids']
-            tokenized_data.append({"token": tokens, "ids": input_ids})
+            attention_masks = inputs['attention_mask']
+            tokenized_data.append(
+                {"token": tokens, "ids": input_ids, "masks": attention_masks}
+            )
 
     return tokenized_data
 
 if __name__ == "__main__":
-    # 加载模型和tokenizer
+    # load tokenizer & model
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
-    model = AutoModel.from_pretrained(MODEL).to("cuda")  # 加载模型并移动到GPU
+    model = AutoModel.from_pretrained(MODEL).to(device)
 
     print("Model:", MODEL)
     uvicorn.run(app, host="0.0.0.0", port=9100)
