@@ -2,6 +2,8 @@
 
 🧐 Learning representations from **smart contracts**!
 
+![SmartBERT Framework](./framework.png)
+
 ## Introduction
 
 **SmartBERT** is a pre-trained programming language model specifically fine-tuned for analyzing **smart contracts**. Based on [microsoft/codebert-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm), which itself follows the [RoBERTa](https://huggingface.co/facebook/roberta-base) architecture using a simple **Masked Language Model (MLM)** objective, SmartBERT converts contract code into embeddings suitable for various downstream tasks in smart contract analysis.
@@ -17,6 +19,8 @@ pip install -r requirements.txt
 ```
 
 Download the **SmartBERT** models from <https://github.com/web3se-lab/SmartBERT/releases> and unzip all files into the `/model` directory, e.g., `/model/SmartBERT-codebert-16000`.
+
+Or, you can download **SmartBERT** from 🤗 Hugging Face: <https://huggingface.co/web3se/SmartBERT-v2>.
 
 ## Usage
 
@@ -43,6 +47,8 @@ services:
 ```
 
 ## API Documentation
+
+Please always input smart contract _function-level_ code into **SmartBERT**.
 
 ### Tokenize
 
@@ -143,3 +149,7 @@ The **V2** dataset is also utilized in the **SmartIntentNN** project, which can 
 Developed by **[Youwei Huang](https://www.devil.ren)**
 
 Trained by **[Sen Fang](https://github.com/TomasAndersonFang)** and **[Youwei Huang](https://www.devil.ren)**
+
+## Acknowledgments
+
+- [Institute of Intelligent Computing Technology, Suzhou, CAS](http://iict.ac.cn/)
