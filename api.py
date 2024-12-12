@@ -1,10 +1,14 @@
 import torch
 import uvicorn
+import os
 from transformers import AutoTokenizer, AutoModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Union, List, Optional
+
+API_PORT = int(os.environ.get("API_PORT", 9100))
+API_MODEL = "./model/" + os.environ.get("API_MODEL", 'SmartBERT-V2-codebert')
 
 app = FastAPI()
 app.add_middleware(
@@ -15,16 +19,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MODEL = "./model/SmartBERT-codebert-16000"
-
-# 检测是否存在GPU
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
-
 
 class TextRequest(BaseModel):
-    text: Union[List[str],
-                str] = Field(..., description="Text or list of texts to be embedded")
+    text: Union[List[str], str] = Field(...,
+                                        description="Text or list of texts to be embedded")
     pool: Optional[str] = Field('avg', regex="^(cls|max|avg|out)$",
                                 description="Optional pooling method: 'cls', 'max', 'avg', 'out'")
 
@@ -102,9 +100,14 @@ async def tokenize(request: TextRequest):
     return tokenized_data
 
 if __name__ == "__main__":
-    # load tokenizer & model
-    tokenizer = AutoTokenizer.from_pretrained(MODEL)
-    model = AutoModel.from_pretrained(MODEL).to(device)
+    # check GPU or CPU
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print("device:", device)
 
-    print("Model:", MODEL)
-    uvicorn.run(app, host="0.0.0.0", port=9100)
+    # load tokenizer & model
+    tokenizer = AutoTokenizer.from_pretrained(API_MODEL)
+    model = AutoModel.from_pretrained(API_MODEL).to(device)
+    print("model:", API_MODEL)
+
+    print("port:", API_PORT)
+    uvicorn.run(app, host="0.0.0.0", port=API_PORT)

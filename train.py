@@ -3,15 +3,12 @@ from transformers import RobertaTokenizer, RobertaForMaskedLM, DataCollatorForLa
 from torch.utils.data import Dataset
 import json
 
-OLD_MODEL = "./base-model/roberta-base"
+OLD_MODEL = "./model/SmartBERT-codebert-16000"  # extend train to 80000 contracts
 OUTPUT_DIR = "./checkpoint"
-TRAIN_DATA = "./data/train.jsonl"  # 1, 16000 smart contracts
-EVAL_DATA = "./data/eval.jsonl"  # 30000, 4000 smart contracts
+TRAIN_DATA = "./data/train.jsonl"  # 30000, 64000 smart contracts
+EVAL_DATA = "./data/eval.jsonl"  # 96425, 1500 smart contracts
 
-EVA_DATA_NUM = 3000
-TRAIN_DATA_NUM = 12000
-
-FINAL_MODEL_PATH = os.path.join(OUTPUT_DIR, "SmartBERT-roberta-16000")
+FINAL_MODEL_PATH = os.path.join(OUTPUT_DIR, "SmartBERT-codebert-80000")
 
 
 class TrainDataset(Dataset):

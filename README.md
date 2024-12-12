@@ -1,16 +1,16 @@
 # SmartBERT
 
-🧐 Learning representations from **smart contracts**!
+🧐 Learn representations from **smart contracts**!
 
 ![SmartBERT Framework](./framework.png)
 
 ## Introduction
 
-**SmartBERT** is a pre-trained programming language model specifically fine-tuned for analyzing **smart contracts**. Based on [microsoft/codebert-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm), which itself follows the [RoBERTa](https://huggingface.co/facebook/roberta-base) architecture using a simple **Masked Language Model (MLM)** objective, SmartBERT converts contract code into embeddings suitable for various downstream tasks in smart contract analysis.
+**SmartBERT** is a pre-trained programming language model specifically fine-tuned for analyzing **Smart Contracts**. Based on [microsoft/codebert-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm), which itself follows the [RoBERTa](https://huggingface.co/facebook/roberta-base) architecture using a simple **Masked Language Model (MLM)** objective, SmartBERT converts _function_ code into embeddings utilized in various downstream tasks in smart contract analysis.
 
 ## Installation
 
-To set up the environment for SmartBERT, it is recommended to first create a virtual environment using tools like [Anaconda](https://www.anaconda.com/).
+To set up the environment for SmartBERT, it is recommended to first create a virtual python environment using tools like [Anaconda](https://www.anaconda.com/).
 
 Then, install the required packages with:
 
@@ -30,20 +30,6 @@ Start the API server using the command:
 
 ```bash
 ./api.sh
-```
-
-### Running with Docker
-
-You can also run SmartBERT using Docker with the provided `docker-compose.yml` file:
-
-```yml
-version: "3"
-services:
-  smartbert:
-    image: devilyouwei/smartbert:latest
-    container_name: smartbert
-    ports:
-      - 8100:8100
 ```
 
 ## API Documentation
@@ -86,7 +72,7 @@ Available pooling methods: average pooling, max pooling, CLS token pooling, and 
 
 ```json
 {
-  "text": ["Smart Contract function-level code here..."],
+  "text": ["function totalSupply() external view returns (uint256);"],
   "pool": "avg"
 }
 ```
@@ -133,11 +119,13 @@ Further customization of training settings can be done in `train.py`.
 
 ### SmartBERT Versions
 
-- **V1**: Trained on a dataset of over **40,000** smart contracts based on [RoBERTa-base](https://huggingface.co/FacebookAI/roberta-base).
-- **V2**: The initial model is changed to [CodeBERT-base-MLM](https://huggingface.co/microsoft/codebert-base-mlm) and trained on **16,000** smart contracts. Refer to the package `README.md` for more details.
-- **V3**: Upcoming version trained on a full dataset of over **40,000** smart contracts.
+- **[V1](https://huggingface.co/web3se/SmartBERT)**: Trained on a dataset of over **40,000** smart contracts using the [RoBERTa-base](https://huggingface.co/FacebookAI/roberta-base) model.
+- **[V2](https://huggingface.co/web3se/SmartBERT-v2)**: Transitioned to the [CodeBERT-base-MLM](https://huggingface.co/microsoft/codebert-base-mlm) model, trained on **16,000** smart contracts.
+- **[V3](https://huggingface.co/web3se/SmartBERT-v3)**: Trained on the V2 foundation with an expanded dataset of **80,000** smart contracts, enabling comprehensive training on our complete dataset.
 
-The **V2** dataset is also utilized in the **SmartIntentNN** project, which can be found at <https://github.com/web3se-lab/web3-sekit>.
+**_Why Only 16,000 Smart Contracts for V2?_**
+
+The **V2** dataset is specifically utilized in the **SmartIntentNN** project, available at <https://github.com/web3se-lab/web3-sekit>. It is important to note that the pre-trained model should not cover the evaluation dataset used for downstream model tasks. This is to ensure that the evaluation results remain unbiased and accurately reflect the model's performance on unseen data. Therefore, the choice to limit the training dataset to **16,000** smart contracts was made to avoid any overlap with the downstream evaluation data.
 
 ## References
 
@@ -152,4 +140,4 @@ Trained by **[Sen Fang](https://github.com/TomasAndersonFang)** and **[Youwei Hu
 
 ## Acknowledgments
 
-- [Institute of Intelligent Computing Technology, Suzhou, CAS](http://iict.ac.cn/)
+- [Institute of Intelligent Computing Technology, Suzhou, CAS](http://iict.ac.cn)
