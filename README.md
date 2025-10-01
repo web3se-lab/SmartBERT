@@ -137,7 +137,7 @@ The **V2** dataset is specifically utilized in the **SmartIntentNN** project, av
 ```tex
 @article{huang2025smart,
   title={Smart Contract Intent Detection with Pre-trained Programming Language Model},
-  author={Huang, Youwei and Li, Jianwen and Fang, Sen and Li, Yao and Yang, Peng and Hu, Bin and Zhang, Tao},
+  author={Huang, Youwei and Li, Jianwen and Fang, Sen and Li, Yao and Yang, Peng and Hu, Bin},
   journal={arXiv preprint arXiv:2508.20086},
   year={2025}
 }
