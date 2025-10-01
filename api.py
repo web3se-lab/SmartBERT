@@ -23,7 +23,7 @@ app.add_middleware(
 class TextRequest(BaseModel):
     text: Union[List[str], str] = Field(...,
                                         description="Text or list of texts to be embedded")
-    pool: Optional[str] = Field('avg', regex="^(cls|max|avg|out)$",
+    pool: Optional[str] = Field('avg', pattern="^(cls|max|avg|out)$",
                                 description="Optional pooling method: 'cls', 'max', 'avg', 'out'")
 
 
