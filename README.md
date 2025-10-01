@@ -132,6 +132,17 @@ The **V2** dataset is specifically utilized in the **SmartIntentNN** project, av
 - [RoBERTa](https://huggingface.co/facebook/roberta-base)
 - [CodeBERT-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm)
 
+## Citations
+
+```tex
+@article{huang2025smart,
+  title={Smart Contract Intent Detection with Pre-trained Programming Language Model},
+  author={Huang, Youwei and Li, Jianwen and Fang, Sen and Li, Yao and Yang, Peng and Hu, Bin and Zhang, Tao},
+  journal={arXiv preprint arXiv:2508.20086},
+  year={2025}
+}
+```
+
 ## Contributors
 
 Developed by **[Youwei Huang](https://www.devil.ren)**
