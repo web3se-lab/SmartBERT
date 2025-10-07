@@ -6,21 +6,31 @@
 
 ## Introduction
 
-**SmartBERT** is a pre-trained programming language model specifically fine-tuned for analyzing **Smart Contracts**. Based on [microsoft/codebert-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm), which itself follows the [RoBERTa](https://huggingface.co/facebook/roberta-base) architecture using a simple **Masked Language Model (MLM)** objective, SmartBERT converts _function_ code into embeddings utilized in various downstream tasks in smart contract analysis.
+**SmartBERT** is a pre-trained programming language model specifically fine-tuned for analyzing **Smart Contracts**. Based on [microsoft/codebert-base-mlm](https://huggingface.co/microsoft/codebert-base-mlm), which itself follows the [RoBERTa](https://huggingface.co/facebook/roberta-base) architecture using a simple **Masked Language Model (MLM)** objective, SmartBERT converts _function-level_ code into embeddings utilized in various downstream tasks in smart contract analysis.
 
 ## Installation
 
-To set up the environment for SmartBERT, it is recommended to first create a virtual python environment using tools like [Anaconda](https://www.anaconda.com/).
+To set up the environment for SmartBERT, it is recommended to first create a virtual python (3.9) environment using tools like [Anaconda](https://www.anaconda.com/).
+
+```bash
+conda create -n smartbert python=3.9
+```
 
 Then, install the required packages with:
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirement.txt
 ```
 
-Download the **SmartBERT** models from <https://github.com/web3se-lab/SmartBERT/releases> and unzip all files into the `/model` directory, e.g., `/model/SmartBERT-codebert-16000`.
+Download the **SmartBERT** models from <https://github.com/web3se-lab/SmartBERT/releases> and unzip all files into the `/model` directory, e.g., `/model/SmartBERT-v2/`.
 
 Or, you can download **SmartBERT** from 🤗 Hugging Face: <https://huggingface.co/web3se/SmartBERT-v2>.
+
+```bash
+git lfs install
+
+git clone https://huggingface.co/web3se/SmartBERT-v2
+```
 
 ## Usage
 
@@ -34,11 +44,11 @@ Start the API server using the command:
 
 ## API Documentation
 
-Please always input smart contract _function-level_ code into **SmartBERT**.
+Please always input smart contract **_function-level_** code into **SmartBERT**.
 
 ### Tokenize
 
-**Endpoint:** `http://localhost:9100/tokenize`
+**Endpoint:** `http://localhost:9900/tokenize`
 
 Use the **POST** method with **JSON** to tokenize text.
 
@@ -66,7 +76,7 @@ Use the **POST** method with **JSON** to tokenize text.
 
 Available pooling methods: average pooling, max pooling, CLS token pooling, and `pooler_output`.
 
-**Endpoint:** `http://localhost:9100/embedding`
+**Endpoint:** `http://localhost:9900/embedding`
 
 **Request:**
 
@@ -85,7 +95,7 @@ Available pooling methods: average pooling, max pooling, CLS token pooling, and 
 ```json
 {
   "embedding": [
-    [-0.006051725707948208, 0.10594873130321503, 0.07721099257469177]
+    [-0.006051725707948208, 0.10594873130321503, 0.07721099257469177, ...]
   ],
   "object": "embedding.avg"
 }

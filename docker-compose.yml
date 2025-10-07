@@ -1,7 +1,0 @@
-version: "3"
-services:
-  smartbert:
-    image: devilyouwei/smartbert:latest
-    container_name: smartbert
-    ports:
-      - 8100:8100

@@ -7,8 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Union, List, Optional
 
-API_PORT = int(os.environ.get("API_PORT", 9100))
-API_MODEL = "./model/" + os.environ.get("API_MODEL", 'SmartBERT-V2-codebert')
+API_PORT = int(os.environ.get("API_PORT", 9900))
+API_MODEL = os.environ.get("API_MODEL", 'web3se/SmartBERT-v2')
 
 app = FastAPI()
 app.add_middleware(
@@ -102,12 +102,14 @@ async def tokenize(request: TextRequest):
 if __name__ == "__main__":
     # check GPU or CPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print("device:", device)
 
     # load tokenizer & model
     tokenizer = AutoTokenizer.from_pretrained(API_MODEL)
     model = AutoModel.from_pretrained(API_MODEL).to(device)
-    print("model:", API_MODEL)
 
-    print("port:", API_PORT)
     uvicorn.run(app, host="0.0.0.0", port=API_PORT)
+
+    print("SmartBERT API is running...")
+    print("Device:", device)
+    print("Model:", API_MODEL)
+    print("Port:", API_PORT)
