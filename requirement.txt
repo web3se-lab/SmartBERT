@@ -6,3 +6,5 @@ python-multipart==0.0.9
 platformdirs==4.3.6
 psutil==6.0.0
 prompt-toolkit==3.0.48
+onnx==1.19.0
+onnxruntime==1.19.2
